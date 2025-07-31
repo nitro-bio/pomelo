@@ -1,9 +1,17 @@
 import sqlite3
-
 from fastapi import FastAPI
 from starlette.responses import FileResponse
 
+from config import check_env_vars
+from protein_folding.routers import router as protein_folding_router
+
+# Initialize environment variables
+env = check_env_vars()
+
 app = FastAPI()
+
+# Include routers
+app.include_router(protein_folding_router, prefix="/api/v1")
 
 
 @app.get("/")
@@ -11,11 +19,24 @@ async def read_index():
     return FileResponse("static/index.html")
 
 
-# anytime we get /assets/*, we want to serve the static files in the assets folder
-# used in prod to serve react build
+@app.get("/app/{full_path:path}")
+async def read_app():
+    return FileResponse("static/index.html")
+
+
+@app.get("/favicon.ico")
+def favicon():
+    return FileResponse("/usr/src/app/static/images/favicon.ico")
+
+
 @app.get("/assets/{file_path}")
-async def static_assets(file_path: str):
-    return FileResponse(f"static/assets/{file_path}")
+def static_assets(file_path: str):
+    return FileResponse(f"/usr/src/app/static/assets/{file_path}")
+
+
+@app.get("/images/{file_path}")
+def static_images(file_path: str):
+    return FileResponse(f"/usr/src/app/static/images/{file_path}")
 
 
 @app.get("/api/users")

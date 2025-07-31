@@ -60,6 +60,9 @@ uv run invoke lint
   - Service-oriented architecture
   - Comprehensive docstrings
   - Implement soft deletion rather than hard deletion when appropriate
+  - **Prefer functional services over class-based services**
+  - Services should be modules with functions, not classes with methods
+  - Use module-level constants and global instances where appropriate
 
 ## Defensive Programming Guidelines
 

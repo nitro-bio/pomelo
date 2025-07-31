@@ -9,7 +9,7 @@ COPY .gitignore ./
 COPY tsconfig.json ./
 COPY tsconfig.node.json ./
 
-COPY .eslintrc.cjs ./
+COPY eslint.config.js ./
 COPY vite.config.ts ./
 COPY package.json pnpm-lock.yaml ./
 # Install pnpm globally and install dependencies

@@ -16,11 +16,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # COPY .env ./
 COPY backend/static/ ./static/
 COPY backend/*.py ./
-
+COPY backend/protein_folding ./protein_folding/
 WORKDIR /usr/src/app/frontend
 
 COPY frontend/index.html ./
-COPY frontend/.eslintrc.cjs ./
+COPY frontend/eslint.config.js ./
 COPY frontend/tsconfig.json ./
 COPY frontend/tsconfig.node.json ./
 COPY frontend/vite.config.ts ./

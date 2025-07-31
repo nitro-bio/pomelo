@@ -2,3 +2,5 @@
 /frontend/.projectile
 /render.yaml
 /.DS_Store
+/.env
+/backend/.env

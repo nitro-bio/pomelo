@@ -1,18 +1,8 @@
-import {
-  IconCamera,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconHelp,
-  IconReport,
-  IconSearch,
-  IconSettings,
-} from "@tabler/icons-react";
+import { IconDashboard } from "@tabler/icons-react";
 import * as React from "react";
 
 import { NavMain } from "@/components/Nav/nav-main";
+import { NavFolding } from "@/components/Nav/nav-folding";
 import { NavSecondary } from "@/components/Nav/nav-secondary";
 import { NavUser } from "@/components/Nav/nav-user";
 import {
@@ -23,105 +13,33 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar/sidebar";
+} from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { CitrusIcon } from "lucide-react";
+import { CitrusIcon, OrigamiIcon } from "lucide-react";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Nitro Bio",
+    email: "https://nitro.bio/",
+    avatar:
+      "https://avatars.githubusercontent.com/u/118011593?s=400&u=320aa01a645a63f4825650f7227d73d9235b3cfe&v=4",
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/",
       icon: IconDashboard,
     },
   ],
-  navClouds: [
+  navFolding: [
     {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      title: "ESMFold",
+      url: "/app/folding/esmfold",
+      icon: OrigamiIcon,
     },
   ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
+
+  navSecondary: [],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -147,6 +65,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
+        <NavFolding items={data.navFolding} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

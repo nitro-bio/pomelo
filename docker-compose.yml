@@ -14,7 +14,9 @@ services:
     build:
       context: ./backend
       dockerfile: ../dockerfiles/Dockerfile.backend
+
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/usr/src/app
+      - ./frontend/public/images/:/usr/src/app/static/images
