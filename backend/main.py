@@ -26,12 +26,12 @@ async def read_app():
 
 @app.get("/favicon.ico")
 def favicon():
-    return FileResponse("/usr/src/app/static/images/favicon.ico")
+    return FileResponse("/usr/src/app/static/favicon.ico")
 
 
 @app.get("/assets/{file_path}")
 def static_assets(file_path: str):
-    return FileResponse(f"/usr/src/app/static/assets/{file_path}")
+    return FileResponse(f"/usr/src/app/static//{file_path}")
 
 
 @app.get("/images/{file_path}")

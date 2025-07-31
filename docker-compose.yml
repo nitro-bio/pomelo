@@ -20,3 +20,5 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - ./frontend/public/images/:/usr/src/app/static/images
+    environment:
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY}

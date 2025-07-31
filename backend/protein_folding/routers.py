@@ -1,6 +1,5 @@
 import logging
 from fastapi import APIRouter, HTTPException
-from typing import Dict
 
 from protein_folding.models import (
     ProteinFoldingResponse,

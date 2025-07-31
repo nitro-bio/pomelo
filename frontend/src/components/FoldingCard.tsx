@@ -1,9 +1,13 @@
+import { useDebounce } from "@uidotdev/usehooks";
 import { FoldResult } from "@/api/protein_folding/schemas";
-import { Button } from "@/components/ui/button/button";
+import { PomeloSequenceViewer } from "@/components/PomeloSequenceViewer";
+import { PomeloMoleculeViewer } from "@/components/PomeloMoleculeViewer";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
-import { MoleculePayload, MoleculeViewer } from "@nitro-bio/molstar-easy";
+import { AriadneSelection } from "@nitro-bio/sequence-viewers";
 import { LoaderCircleIcon } from "lucide-react";
 import { useState } from "react";
+import { plddtColorLegend } from "@/constants";
 
 export const FoldingCard = ({
   foldingData,
@@ -11,43 +15,27 @@ export const FoldingCard = ({
   foldingError,
   structureHexColor = "#FF0000",
   className,
+  sequence,
 }: {
   foldingData: FoldResult | null;
   isFetchingFolding: boolean;
   foldingError: Error | null;
   structureHexColor?: string;
   className?: string;
+  sequence: string;
 }) => {
-  const [mode, setMode] = useState<"default" | "plddt">("default");
-
-  let payloads: MoleculePayload[] = [];
-  if (foldingData) {
-    const pdbString = foldingData.pdb;
-    const plddt = foldingData.plddt;
-    console.log(plddt);
-    payloads = [
-      {
-        structureString: pdbString,
-        format: "pdb" as const,
-        indexToColor: new Map(
-          plddt.map((plddtValue, i) => {
-            if (mode === "default") {
-              return [i, structureHexColor];
-            } else {
-              return [i, plddtToColor(plddtValue)];
-            }
-          }),
-        ),
-      },
-    ];
-  }
+  const [selection, setSelection] = useState<AriadneSelection | null>(null);
+  const debouncedSelection = useDebounce(selection, 200);
+  const [viewMode, setViewMode] = useState<("sequence" | "protein")[]>([
+    "protein",
+  ]);
+  const [showPlddt, setShowPlddt] = useState<boolean>(false);
 
   return (
     <div
       className={cn(
         "overflow-hidden rounded-md border px-4 py-2",
-        "bg-background",
-        "relative",
+        "bg-white",
         className,
       )}
     >
@@ -64,41 +52,80 @@ export const FoldingCard = ({
               "An internal error occured during folding."}
           </p>
         )}
-        <div className="absolute top-0 right-0 z-[10] flex h-12 w-fit gap-1">
-          <Button
-            size="xs"
-            onClick={() => {
-              setMode(mode === "default" ? "plddt" : "default");
-            }}
-            variant={mode === "plddt" ? "default" : "outline"}
+
+        <ToggleGroup
+          type="multiple"
+          defaultValue={["protein"]}
+          value={viewMode}
+          variant="outline"
+          onValueChange={(value) => {
+            if (value.length > 0) {
+              setViewMode(value as ("sequence" | "protein")[]);
+            }
+          }}
+          className="-mt-2 -ml-4"
+        >
+          <ToggleGroupItem
+            className="text-xs"
+            variant="outline"
+            value="protein"
           >
-            pLDDT
-          </Button>
-        </div>
-        <MoleculeViewer
-          moleculePayloads={payloads}
-          className="min-h-80 w-full flex-1"
-          backgroundHexColor="#FCFBFA"
-        />
+            Protein
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            className="text-xs"
+            variant="outline"
+            value="sequence"
+          >
+            Sequence
+          </ToggleGroupItem>
+        </ToggleGroup>
+
+        <span
+          className={cn(
+            "grid grid-cols-1 gap-4 py-2",
+            viewMode.length > 1 ? "md:grid-cols-2" : "grid-cols-1",
+          )}
+        >
+          {viewMode.includes("protein") && (
+            <PomeloMoleculeViewer
+              pdb={foldingData?.pdb}
+              plddt={foldingData?.plddt}
+              structureHexColor={structureHexColor}
+              showPlddt={showPlddt}
+              setShowPlddt={setShowPlddt}
+              sequence={sequence}
+              selection={debouncedSelection}
+            />
+          )}
+          {viewMode.includes("sequence") && (
+            <div className="min-h-80 w-full flex-1">
+              <PomeloSequenceViewer
+                sequences={[sequence]}
+                selection={selection}
+                setSelection={setSelection}
+                charClassName={({ base }) => {
+                  if (showPlddt && foldingData?.plddt) {
+                    const plddt = foldingData?.plddt[base.index];
+                    return plddtToClassName(plddt);
+                  }
+                  return "text-primary";
+                }}
+              />
+            </div>
+          )}
+        </span>
       </div>
     </div>
   );
 };
 
-// make sure this is sorted in descending order so that our color mapping works
-const plddtColorLegend: [number, string, string][] = [
-  [90, "#0053D6", "> 90%"],
-  [70, "#65CBF3", "> 70%"],
-  [50, "#FFDB13", "> 50%"],
-  [0, "#FF7D45", "< 50%"],
-];
-
-const plddtToColor = (plddt: number) => {
-  for (const [threshold, color] of plddtColorLegend) {
+export const plddtToClassName = (plddt: number) => {
+  for (const [threshold, _, className] of plddtColorLegend) {
     if (plddt >= threshold) {
-      return color;
+      return className;
     }
   }
-  console.error("No color found for pLDDT", plddt);
-  return "#F1F1F1";
+  console.error("No class name found for pLDDT", plddt);
+  return "text-muted-foreground";
 };

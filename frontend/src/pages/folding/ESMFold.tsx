@@ -39,7 +39,7 @@ export default function ESMFold(): React.ReactElement {
   return (
     <Shell>
       <div className="flex min-h-screen flex-col items-center justify-start p-8">
-        <div className="flex w-full max-w-4xl flex-col gap-8">
+        <div className="flex w-full flex-col gap-8">
           <div className="flex flex-col gap-4 text-center">
             <h1 className="text-4xl font-bold tracking-tight">ESMFold</h1>
             <p className="text-muted-foreground text-lg">
@@ -95,6 +95,7 @@ export default function ESMFold(): React.ReactElement {
                   foldingError={null}
                   structureHexColor={STRUCTURE_HEX_COLOR}
                   className="h-full"
+                  sequence={form.getValues("sequence")}
                 />
               )}
 
@@ -106,6 +107,7 @@ export default function ESMFold(): React.ReactElement {
                   foldingError={null}
                   structureHexColor="#FF0000"
                   className="h-full"
+                  sequence={form.getValues("sequence")}
                 />
               ))}
             </div>

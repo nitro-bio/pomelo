@@ -4,4 +4,6 @@ services:
     build:
       dockerfile: Dockerfile.production
     ports:
-      - "5000:5000"
+      - "10000:10000"
+    environment:
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY}
