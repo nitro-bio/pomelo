@@ -8,6 +8,8 @@ import { AriadneSelection } from "@nitro-bio/sequence-viewers";
 import { LoaderCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { plddtColorLegend } from "@/constants";
+import { Button, buttonVariants } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export const FoldingCard = ({
   foldingData,
@@ -41,7 +43,7 @@ export const FoldingCard = ({
     >
       <div className={cn("relative flex h-full flex-col")}>
         {isFetchingFolding && (
-          <p className="bg-background absolute inset-0 flex animate-pulse items-center justify-center gap-1">
+          <p className="bg-background absolute -inset-x-4 -inset-y-2 flex animate-pulse items-center justify-center gap-1">
             <LoaderCircleIcon className="my-auto h-4 w-4 animate-spin" />
             Folding protein...
           </p>
@@ -63,22 +65,55 @@ export const FoldingCard = ({
               setViewMode(value as ("sequence" | "protein")[]);
             }
           }}
-          className="-mt-2 -ml-4"
+          className="flex gap-2"
         >
           <ToggleGroupItem
+            variant={showPlddt ? "default" : "outline"}
             className="text-xs"
-            variant="outline"
             value="protein"
           >
             Protein
           </ToggleGroupItem>
           <ToggleGroupItem
-            className="text-xs"
-            variant="outline"
+            variant={showPlddt ? "default" : "outline"}
+            className="px-4 text-xs"
             value="sequence"
           >
             Sequence
           </ToggleGroupItem>
+          <Tooltip>
+            <TooltipTrigger
+              onClick={() => {
+                setShowPlddt((prev) => !prev);
+              }}
+              className={cn(
+                showPlddt
+                  ? buttonVariants({ variant: "default" })
+                  : buttonVariants({ variant: "outline" }),
+              )}
+            >
+              pLDDT
+            </TooltipTrigger>
+            <TooltipContent className="bg-input text-foreground ml-2">
+              <p>pLDDT is a per-residue measure of model confidence.</p>
+              <ul className="flex gap-4">
+                {Array.from(plddtColorLegend.entries()).map(
+                  ([, [threshold, color, _, label]]) => (
+                    <li
+                      key={threshold.toString()}
+                      className="mt-1 flex items-center gap-1"
+                    >
+                      <div
+                        className="inline-block size-3"
+                        style={{ backgroundColor: color }}
+                      />
+                      {label}
+                    </li>
+                  ),
+                )}
+              </ul>
+            </TooltipContent>
+          </Tooltip>
         </ToggleGroup>
 
         <span
@@ -93,7 +128,6 @@ export const FoldingCard = ({
               plddt={foldingData?.plddt}
               structureHexColor={structureHexColor}
               showPlddt={showPlddt}
-              setShowPlddt={setShowPlddt}
               sequence={sequence}
               selection={debouncedSelection}
             />

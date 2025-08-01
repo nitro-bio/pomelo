@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +19,9 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps): React.ReactElement {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>{children}</BrowserRouter>
+      <BrowserRouter>
+        <TooltipProvider delayDuration={100}>{children}</TooltipProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

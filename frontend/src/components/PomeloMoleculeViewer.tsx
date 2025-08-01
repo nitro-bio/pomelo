@@ -11,7 +11,6 @@ interface PomeloMoleculeViewerProps {
   structureHexColor?: string;
   className?: string;
   showPlddt: boolean;
-  setShowPlddt: React.Dispatch<React.SetStateAction<boolean>>;
   selection: AriadneSelection | null;
   sequence: string;
 }
@@ -61,17 +60,6 @@ export const PomeloMoleculeViewer = ({
 
   return (
     <div className={cn("relative", className)}>
-      <div className="absolute right-2 bottom-0 z-[10] flex h-12 w-fit gap-1">
-        <Button
-          size="xs"
-          onClick={() => {
-            setShowPlddt((prev) => !prev);
-          }}
-          variant={showPlddt ? "default" : "outline"}
-        >
-          pLDDT
-        </Button>
-      </div>
       <MoleculeViewer
         moleculePayloads={payloads}
         className="min-h-80 w-full flex-1"
