@@ -7,4 +7,27 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "@/", replacement: "/src/" }],
   },
+  build: {
+    sourcemap: true,
+    target: "es2020",
+    minify: "esbuild",
+    commonjsOptions: { transformMixedEsModules: true }, // needed for ketcher
+    rollupOptions: {
+      output: {
+        advancedChunks: {
+          groups: [
+            {
+              name: "ketcher_lib",
+              test: /^node_modules\/ketcher-(?:core|standalone)$/,
+              priority: 120, // keep it separate even when imported once
+            },
+          ],
+        },
+      },
+    },
+  },
+  define: {
+    global: "window", // needed by draft-js (ketcher dependency)
+    "process.env.DUMMY_VAL_FOR_KETCHER": JSON.stringify("true"), // define process.env for ketcher
+  },
 });

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import React from "react";
 
 import {
@@ -19,6 +19,11 @@ export function NavFolding({
     icon?: JSX.ElementType;
   }[];
 }): React.ReactElement {
+  const location = useLocation();
+  const isActive = (url: string) => {
+    return location.pathname === url;
+  };
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Folding</SidebarGroupLabel>
@@ -26,7 +31,11 @@ export function NavFolding({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                className={isActive(item.url) ? "bg-accent" : ""}
+              >
                 <Link to={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>

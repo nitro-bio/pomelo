@@ -4,6 +4,9 @@ import App from "./App.tsx";
 import { Providers } from "./providers.tsx";
 import "./index.css";
 
+// Polyfill for 'global' required by draft-js (used by Ketcher)
+window.global = window;
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Providers>

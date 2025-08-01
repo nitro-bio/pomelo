@@ -152,3 +152,17 @@
 	--color-sequences-primary: var(--color-primary);
 	--color-sequences-secondary: var(--color-accent);
 }
+
+/* restyle ketcher */
+.ketcher-root button {
+	/* hover */
+	&:hover {
+		background-color: var(--color-primary) !important;
+		color: var(--color-primary-foreground) !important;
+	}
+	&:active,
+	&[class*="selected"] {
+		background-color: var(--color-primary) !important 
+		color: var(--color-primary-foreground) !important;
+	}
+}

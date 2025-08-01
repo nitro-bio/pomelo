@@ -3,6 +3,7 @@ import {
   Boltz2RequestSchema,
   type Boltz2Request,
 } from "@/api/protein_folding/schemas";
+import { ChemicalFormInput } from "@/components/ChemicalFormInput";
 import { FoldingCard } from "@/components/FoldingCard";
 import Shell from "@/components/Shell";
 import { Button } from "@/components/ui/button/button";
@@ -18,12 +19,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { STRUCTURE_HEX_COLOR } from "@/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function Boltz2(): React.ReactElement {
   const { foldBoltz2, isFolding, foldingError, foldingResult } =
     useBoltz2Mutation();
+
+  const [showKetcher, setShowKetcher] = useState(false);
 
   const form = useForm<Boltz2Request>({
     resolver: zodResolver(Boltz2RequestSchema),
@@ -80,13 +83,36 @@ export default function Boltz2(): React.ReactElement {
                 name="ligandSmiles"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ligand SMILES (Optional)</FormLabel>
+                    <FormLabel>Ligand Structure (Optional)</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Enter SMILES notation for ligand..."
-                        className="font-mono text-sm"
-                        {...field}
-                      />
+                      <div className="flex flex-col gap-4">
+                        {showKetcher ? (
+                          <ChemicalFormInput
+                            initialSmiles={field.value}
+                            onSmilesChange={(smiles) => {
+                              field.onChange(smiles);
+                              setShowKetcher(false);
+                            }}
+                          />
+                        ) : (
+                          <div className="flex justify-end gap-2">
+                            <Input
+                              placeholder="Enter SMILES notation..."
+                              className="font-mono text-sm"
+                              disabled={showKetcher}
+                              {...field}
+                            />
+
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setShowKetcher(!showKetcher)}
+                            >
+                              {showKetcher ? "Hide Editor" : "Structure Editor"}
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
