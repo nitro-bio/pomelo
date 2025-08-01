@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-oxc";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -10,7 +10,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
     target: "es2020",
-    minify: "esbuild",
+    minify: "oxc",
     commonjsOptions: { transformMixedEsModules: true }, // needed for ketcher
     rollupOptions: {
       output: {
