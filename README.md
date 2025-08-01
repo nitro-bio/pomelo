@@ -16,6 +16,14 @@ Pomelo is a modern web-based platform for biological machine learning applicatio
 
 ## 🚀 Quick Start 
 
+First, grab an api key from https://build.nvidia.com/ and write it to `.env`
+
+```
+NVIDIA_API_KEY=<api_kay>
+```
+
+then run
+
 ```bash
 # Clone the repository
 cd pomelo
