@@ -1,97 +1,227 @@
-# Micro-App
+# 🧬 Pomelo - Open Source Bio ML Playground
 
-[![Backend Lint](https://github.com/nitro-bio/pomelo/actions/workflows/backend_lint.yml/badge.svg)](https://github.com/nitro-bio/pomelo/actions/workflows/backend_lint.yml)
+<div align="center">
 
-[![Frontend Lint](https://github.com/nitro-bio/pomelo/actions/workflows/frontend_lint.yml/badge.svg)](https://github.com/nitro-bio/pomelo/actions/workflows/frontend_lint.yml)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.116-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**An open-source platform for molecular visualization and protein structure prediction**
 
-## Introduction
+[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Development](#development) • [Contributing](#contributing)
 
-This project sets up a simple fullstack application. It includes a frontend built using React, a backend built with FastAPI, as well as a SQLite database. The frontend is bundeled via Vite and uses Tailwind CSS for styling. The application is (optionally) containerized using Docker.
+</div>
 
-## Technologies Used
+## 🌟 Overview
 
-- **Database**
-  - SQLite
-- **Backend**
-  - FastAPI
-- **Frontend**
-  - React
-  - Vite
-  - TypeScript
-  - Tailwind CSS
+Pomelo is a modern web-based platform for biological machine learning applications, focusing on protein structure prediction and molecular visualization. Built with cutting-edge web technologies and powered by state-of-the-art ML models, Pomelo provides researchers and developers with an intuitive interface for exploring protein structures.
 
-## Quickstart
+## ✨ Features
 
-After cloning the repository, you can start the application in one of two ways: using Docker or running natively.
+- **🔬 Protein Structure Prediction**: Integrated ESMFold for predicting 3D protein structures from amino acid sequences
+- **🎨 Interactive Molecular Visualization**: Powered by Molstar for high-quality 3D rendering
+- **📊 Sequence Analysis**: Built-in sequence viewers for detailed protein analysis
+- **🚀 Modern Tech Stack**: React + TypeScript frontend with FastAPI backend
+- **🎯 User-Friendly Interface**: Clean, intuitive UI built with ShadCN components
+- **📱 Responsive Design**: Works seamlessly across desktop and mobile devices
 
-### Using Docker
+## 🛠️ Tech Stack
 
-To quickly start the entire application in dev mode using Docker, run the following command:
+### Frontend
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite with Rolldown
+- **Styling**: TailwindCSS v4
+- **UI Components**: ShadCN (Radix UI primitives)
+- **State Management**: TanStack Query
+- **Visualization**: 
+  - Molstar & @nitro-bio/molstar-easy for 3D structures
+  - @nitro-bio/sequence-viewers for sequence display
+  - Recharts for data visualization
+
+### Backend
+- **Framework**: FastAPI (Python 3.12)
+- **Database**: SQLite
+- **Task Management**: Invoke
+- **Deployment**: Docker & Docker Compose
+
+## 📋 Prerequisites
+
+- Node.js (v18 or higher)
+- Python 3.12
+- pnpm (for JavaScript package management)
+- uv (for Python package management)
+- Docker & Docker Compose (for containerized deployment)
+
+## 🚀 Installation
+
+### Clone the Repository
 
 ```bash
-docker-compose up --build
+git clone https://github.com/yourusername/pomelo.git
+cd pomelo
 ```
 
-This command builds and runs the containers for both the frontend and backend parts of the application. The app will be then be available at http://localhost:8000.
-
-### Running Natively
-
-For a native setup, follow these steps:
-
-#### Frontend
+### Frontend Setup
 
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
 ```
 
-#### Backend
-
-In a new shell, set up the backend:
+### Backend Setup
 
 ```bash
 cd backend
-
-# If using venv
-python3 -m venv venv
-source venv/bin/activate
-
-# If using conda
-conda create --name myenv python=3.9
-conda activate myenv
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the application
-uvicorn main:app --reload
+uv venv
+uv pip install -r requirements.txt
 ```
 
-The app will be then be available at http://localhost:8000.
+### Environment Configuration
 
-#### Production builds
+Create a `.env` file in the backend directory with necessary environment variables:
 
-To spin up a production build, run
 ```bash
-docker-compose -f docker-compose.production.yml up --build
+# Example environment variables
+DATABASE_URL=sqlite:///database.db
 ```
 
-## Directory Structure
+## 💻 Development
 
-- `backend/`:
-  - `main.py`: The main application file where the FastAPI app is defined.
-  - `requirements.txt`: Lists the Python dependencies for the backend.
-  - `static/`: A directory to serve static files, like the index.html that bootstraps the frontend.
-- `frontend/`:
-  - `package.json`: Lists the npm dependencies and scripts for the frontend.
-  - `src/`: Contains the source code for the React application, including App.tsx and other TypeScript files.
-- `dockerfiles/`:
-  - `Dockerfile.backend`: containerizes the backend app
-  - `Dockerfile.frontend`: containerizes the frontend app
-- `docker-compose.yml`: Defines the multi-container Docker applications and how they interact.
-- `.github/`
-  - `workflows/`
-  - `backend_lint.yml` Defines the GitHub Actions workflow for linting the backend via ruff and black.
-  - `frontend_lint.yml` Defines the GitHub Actions workflow for linting the frontend via ESLint, tsc, and Prettier.
+### Running Development Servers
+
+#### Frontend (runs on port 3000)
+```bash
+cd frontend
+pnpm dev
+```
+
+#### Backend (runs on port 8000)
+```bash
+cd backend
+uv run uvicorn main:app --reload
+```
+
+### Available Scripts
+
+#### Frontend
+```bash
+# Run TypeScript check and ESLint
+pnpm lint
+
+# Watch mode for linting
+pnpm lint:watch
+
+# Build for production
+pnpm build
+
+# Format code
+pnpm format:fix
+```
+
+#### Backend
+```bash
+# Run linting and type checking
+uv run invoke lint
+
+# Run the development server
+uv run uvicorn main:app --reload
+```
+
+## 🐳 Docker Deployment
+
+### Using Docker Compose
+
+```bash
+# Development environment
+docker-compose up
+
+# Production environment
+docker-compose -f docker-compose.production.yml up
+```
+
+## 📖 Usage
+
+### Using ESMFold for Protein Structure Prediction
+
+1. Navigate to the homepage at `http://localhost:3000`
+2. Click on "Use ESMFold" to access the protein folding interface
+3. Enter or paste your amino acid sequence in the input field
+4. Click "Fold Protein" to generate the 3D structure
+5. Interact with the visualization:
+   - Rotate: Click and drag
+   - Zoom: Scroll or pinch
+   - Pan: Right-click and drag
+
+### API Endpoints
+
+The backend provides RESTful API endpoints:
+
+```bash
+POST /api/v1/protein_fold/esmfold
+Content-Type: application/json
+
+{
+  "sequence": "MAGEGDQQDAAAHNMGNHLPLLPAESEEDEMEVEDQDKEAKKPNIINFMTSLPTSHTYLGADMI"
+}
+```
+
+## 📁 Project Structure
+
+```
+pomelo/
+├── frontend/                # React frontend application
+│   ├── src/
+│   │   ├── api/            # API client and hooks
+│   │   ├── components/     # React components
+│   │   ├── pages/          # Page components
+│   │   └── lib/            # Utilities
+│   └── package.json
+├── backend/                 # FastAPI backend
+│   ├── protein_folding/    # Protein folding module
+│   │   └── esmfold/        # ESMFold implementation
+│   ├── main.py             # FastAPI application
+│   └── requirements.txt
+├── dockerfiles/            # Docker configurations
+├── docker-compose.yml      # Development compose
+└── docker-compose.production.yml
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Code Style
+
+- **Frontend**: Follow the existing TypeScript/React patterns
+- **Backend**: Use type annotations and follow PEP 8
+- Run linting before committing: `pnpm lint` (frontend) and `uv run invoke lint` (backend)
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [ESMFold](https://github.com/facebookresearch/esm) by Meta AI Research
+- [Molstar](https://molstar.org/) for molecular visualization
+- [Nitro Bio](https://github.com/nitro-bio) for sequence viewing components
+- [ShadCN](https://ui.shadcn.com/) for beautiful UI components
+
+## 📧 Contact
+
+For questions or support, please open an issue on GitHub.
+
+---
+
+<div align="center">
+Made with ❤️ by the Pomelo Team
+</div>
