@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button/button";
 import { plddtColorLegend } from "@/constants";
 import { cn } from "@/lib/utils";
 import { MoleculePayload, MoleculeViewer } from "@nitro-bio/molstar-easy";
@@ -6,7 +5,8 @@ import { AriadneSelection, baseInSelection } from "@nitro-bio/sequence-viewers";
 import { useMemo } from "react";
 
 interface PomeloMoleculeViewerProps {
-  pdb?: string;
+  structure_string?: string;
+  structure_format?: "pdb" | "mmcif";
   plddt?: number[];
   structureHexColor?: string;
   className?: string;
@@ -16,23 +16,23 @@ interface PomeloMoleculeViewerProps {
 }
 
 export const PomeloMoleculeViewer = ({
-  pdb,
+  structure_string,
+  structure_format = "pdb",
   plddt,
   sequence,
   selection,
   structureHexColor = "#FF0000",
   showPlddt,
-  setShowPlddt,
   className,
 }: PomeloMoleculeViewerProps) => {
   const payloads: MoleculePayload[] = useMemo(() => {
-    if (!pdb || !plddt) {
+    if (!structure_string || !plddt) {
       return [];
     }
     return [
       {
-        structureString: pdb,
-        format: "pdb" as const,
+        structureString: structure_string,
+        format: structure_format,
         indexToColor: new Map(
           plddt.map((plddtValue: number, i: number) => {
             if (
@@ -56,7 +56,14 @@ export const PomeloMoleculeViewer = ({
         ),
       },
     ];
-  }, [plddt, pdb, showPlddt, structureHexColor, selection]);
+  }, [
+    plddt,
+    structure_string,
+    structure_format,
+    showPlddt,
+    structureHexColor,
+    selection,
+  ]);
 
   return (
     <div className={cn("relative", className)}>

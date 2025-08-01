@@ -1,7 +1,8 @@
 import sqlite3
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from starlette.responses import FileResponse
-
+import logging
+import time
 from config import check_env_vars
 from protein_folding.routers import router as protein_folding_router
 
@@ -9,6 +10,24 @@ from protein_folding.routers import router as protein_folding_router
 env = check_env_vars()
 
 app = FastAPI()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    logger.info(f"Incoming Request: Method={request.method}, URL={request.url}")
+
+    response = await call_next(request)
+
+    process_time = time.time() - start_time
+    logger.info(
+        f"Outgoing Response: Status={response.status_code}, ProcessTime={process_time:.4f}s"
+    )
+    return response
+
 
 # Include routers
 app.include_router(protein_folding_router, prefix="/api/v1")

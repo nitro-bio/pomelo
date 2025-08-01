@@ -1,5 +1,5 @@
 import { useDebounce } from "@uidotdev/usehooks";
-import { FoldResult } from "@/api/protein_folding/schemas";
+import { FoldResult, Boltz2Result } from "@/api/protein_folding/schemas";
 import { PomeloSequenceViewer } from "@/components/PomeloSequenceViewer";
 import { PomeloMoleculeViewer } from "@/components/PomeloMoleculeViewer";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -8,7 +8,7 @@ import { AriadneSelection } from "@nitro-bio/sequence-viewers";
 import { LoaderCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { plddtColorLegend } from "@/constants";
-import { Button, buttonVariants } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export const FoldingCard = ({
@@ -19,7 +19,7 @@ export const FoldingCard = ({
   className,
   sequence,
 }: {
-  foldingData: FoldResult | null;
+  foldingData: FoldResult | Boltz2Result | null;
   isFetchingFolding: boolean;
   foldingError: Error | null;
   structureHexColor?: string;
@@ -33,15 +33,22 @@ export const FoldingCard = ({
   ]);
   const [showPlddt, setShowPlddt] = useState<boolean>(false);
 
+  const structure_format: "pdb" | "mmcif" =
+    foldingData && "mmcif_string" in foldingData ? "mmcif" : "pdb";
+  const structure_string =
+    foldingData && "mmcif_string" in foldingData
+      ? foldingData.mmcif_string
+      : foldingData?.pdb;
+
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-md border px-4 py-2",
+        "relative overflow-hidden rounded-md border px-4 py-2",
         "bg-white",
         className,
       )}
     >
-      <div className={cn("relative flex h-full flex-col")}>
+      <div className={cn("flex h-full min-h-80 flex-col")}>
         {isFetchingFolding && (
           <p className="bg-background absolute -inset-x-4 -inset-y-2 flex animate-pulse items-center justify-center gap-1">
             <LoaderCircleIcon className="my-auto h-4 w-4 animate-spin" />
@@ -116,39 +123,42 @@ export const FoldingCard = ({
           </Tooltip>
         </ToggleGroup>
 
-        <span
-          className={cn(
-            "grid grid-cols-1 gap-4 py-2",
-            viewMode.length > 1 ? "md:grid-cols-2" : "grid-cols-1",
-          )}
-        >
-          {viewMode.includes("protein") && (
-            <PomeloMoleculeViewer
-              pdb={foldingData?.pdb}
-              plddt={foldingData?.plddt}
-              structureHexColor={structureHexColor}
-              showPlddt={showPlddt}
-              sequence={sequence}
-              selection={debouncedSelection}
-            />
-          )}
-          {viewMode.includes("sequence") && (
-            <div className="min-h-80 w-full flex-1">
-              <PomeloSequenceViewer
-                sequences={[sequence]}
-                selection={selection}
-                setSelection={setSelection}
-                charClassName={({ base }) => {
-                  if (showPlddt && foldingData?.plddt) {
-                    const plddt = foldingData?.plddt[base.index];
-                    return plddtToClassName(plddt);
-                  }
-                  return "text-primary";
-                }}
+        {foldingData && (
+          <span
+            className={cn(
+              "grid grid-cols-1 gap-4 py-2",
+              viewMode.length > 1 ? "md:grid-cols-2" : "grid-cols-1",
+            )}
+          >
+            {viewMode.includes("protein") && (
+              <PomeloMoleculeViewer
+                structure_string={structure_string}
+                structure_format={structure_format}
+                plddt={foldingData?.plddt}
+                structureHexColor={structureHexColor}
+                showPlddt={showPlddt}
+                sequence={sequence}
+                selection={debouncedSelection}
               />
-            </div>
-          )}
-        </span>
+            )}
+            {viewMode.includes("sequence") && (
+              <div className="min-h-80 w-full flex-1">
+                <PomeloSequenceViewer
+                  sequences={[sequence]}
+                  selection={selection}
+                  setSelection={setSelection}
+                  charClassName={({ base }) => {
+                    if (showPlddt && foldingData?.plddt) {
+                      const plddt = foldingData?.plddt[base.index];
+                      return plddtToClassName(plddt);
+                    }
+                    return "text-primary";
+                  }}
+                />
+              </div>
+            )}
+          </span>
+        )}
       </div>
     </div>
   );

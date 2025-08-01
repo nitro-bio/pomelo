@@ -1,6 +1,4 @@
 import { IconDashboard } from "@tabler/icons-react";
-import * as React from "react";
-
 import { NavMain } from "@/components/Nav/nav-main";
 import { NavFolding } from "@/components/Nav/nav-folding";
 import { NavSecondary } from "@/components/Nav/nav-secondary";
@@ -35,6 +33,11 @@ const data = {
     {
       title: "ESMFold",
       url: "/app/folding/esmfold",
+      icon: OrigamiIcon,
+    },
+    {
+      title: "Boltz-2",
+      url: "/app/folding/boltz2",
       icon: OrigamiIcon,
     },
   ],

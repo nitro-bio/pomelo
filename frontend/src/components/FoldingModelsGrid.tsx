@@ -1,7 +1,7 @@
-import React from "react";
-import { OrigamiIcon } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button/button";
+import { OrigamiIcon } from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
 
 interface FoldingModel {
   id: string;
@@ -20,6 +20,15 @@ const foldingModels: FoldingModel[] = [
       "Predicts the 3D structure of a protein from its amino acid sequence using language model embeddings.",
     icon: OrigamiIcon,
     href: "/app/folding/esmfold",
+    isAvailable: true,
+  },
+  {
+    id: "boltz2",
+    name: "Boltz-2",
+    description:
+      "Predicts protein structures and their interactions with small molecule ligands using advanced AI models.",
+    icon: OrigamiIcon,
+    href: "/app/folding/boltz2",
     isAvailable: true,
   },
 ];

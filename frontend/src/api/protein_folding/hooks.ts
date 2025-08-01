@@ -5,6 +5,9 @@ import {
   ProteinFoldingResponseSchema,
   ProteinFoldingHealthResponse,
   ProteinFoldingHealthResponseSchema,
+  Boltz2Request,
+  Boltz2Response,
+  Boltz2ResponseSchema,
 } from "./schemas";
 import { apiRouter } from "@/api/router";
 
@@ -64,5 +67,40 @@ export const useProteinFoldingHealthCheck = () => {
     healthStatus: data,
     isCheckingHealth: isLoading,
     healthError: error as Error | null,
+  };
+};
+
+// Add the API call function
+const foldBoltz2Protein = async (
+  payload: Boltz2Request,
+): Promise<Boltz2Response> => {
+  const raw = await apiRouter.url("/protein_fold/boltz2").post(payload).json();
+  const parsed = Boltz2ResponseSchema.parse(raw);
+  return parsed;
+};
+
+// Add the mutation hook
+export const useBoltz2Mutation = () => {
+  const {
+    mutate: foldBoltz2,
+    isPending: isFolding,
+    error: foldingError,
+    data: foldingResult,
+    isSuccess: isFoldingSuccess,
+  } = useMutation({
+    mutationFn: (payload: Boltz2Request) => {
+      return foldBoltz2Protein(payload);
+    },
+    onError: (error) => {
+      console.error("Boltz-2 folding failed:", error);
+    },
+  });
+
+  return {
+    foldBoltz2,
+    isFolding,
+    foldingError,
+    foldingResult,
+    isFoldingSuccess,
   };
 };

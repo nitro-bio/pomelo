@@ -12,6 +12,7 @@ export default function Shell({ children }: { children: ReactNode }) {
           "--header-height": "calc(var(--spacing) * 12)",
         } as React.CSSProperties
       }
+      className="z-10"
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
