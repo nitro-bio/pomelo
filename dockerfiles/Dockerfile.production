@@ -1,0 +1,91 @@
+# Backend stage
+FROM python:3.12-slim AS backend
+
+WORKDIR /usr/src/app/backend
+
+# Install system dependencies including Cairo (for svg manipulation) and libpq (for PostgreSQL)
+# and curl for uv
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pkg-config \
+    python3-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv for faster package installation
+ADD https://astral.sh/uv/install.sh /install.sh
+RUN chmod +x /install.sh && /install.sh && rm /install.sh
+ENV PATH="/root/.local/bin/:$PATH"
+
+COPY backend/requirements.txt ./
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN uv venv $VIRTUAL_ENV
+RUN uv pip install --no-cache-dir -r requirements.txt
+
+
+# Copy backend code (separated to improve caching)
+COPY backend/*.py ./
+COPY backend/protein_folding ./protein_folding/
+
+
+# Frontend stage
+FROM node:18-slim AS frontend
+
+WORKDIR /usr/src/app/frontend
+
+# Install pnpm globally
+RUN npm install -g pnpm
+
+# Copy package files separately for better layer caching
+COPY frontend/package.json frontend/pnpm-lock.yaml ./
+COPY frontend/tsconfig.json frontend/tsconfig.node.json ./
+COPY frontend/components.json ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy configuration files first
+COPY frontend/vite.config.ts ./
+COPY frontend/index.html ./
+
+# Then copy source code
+COPY frontend/public ./public
+COPY frontend/src ./src
+
+# Render provides these [default environment variables](https://docs.render.com/environment-variables) which indicate
+# the environment in which the application is running.
+ARG RENDER
+ARG IS_PULL_REQUEST
+ARG RENDER_GIT_COMMIT
+ARG BUILDKIT_INLINE_CACHE
+
+# Rename so that they are available in vite under import.meta.env
+# See: https://vite.dev/guide/env-and-mode#env-files
+ENV VITE_RENDER=${RENDER}
+ENV VITE_IS_PULL_REQUEST=${IS_PULL_REQUEST}
+ENV VITE_RENDER_GIT_COMMIT=${RENDER_GIT_COMMIT}
+
+# Build with optimizations
+RUN pnpm vite build  --outDir dist
+
+# Final stage
+FROM python:3.12-slim
+
+WORKDIR /usr/src/app
+
+# Copy from previous stages
+COPY --from=backend /opt/venv /opt/venv
+COPY --from=backend /usr/src/app/backend ./backend
+COPY --from=frontend /usr/src/app/frontend/dist ./backend/static
+
+# Set environment and working directory
+WORKDIR /usr/src/app/backend
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONOPTIMIZE=1
+
+# Set number of workers based on CPU cores available
+ENV WORKERS=4
+
+ENTRYPOINT ["invoke", "serve"]

@@ -15,28 +15,28 @@ app.include_router(protein_folding_router, prefix="/api/v1")
 
 
 @app.get("/")
-async def read_index():
-    return FileResponse("static/index.html")
-
-
 @app.get("/app/{full_path:path}")
 async def read_app():
     return FileResponse("static/index.html")
 
 
-@app.get("/favicon.ico")
-def favicon():
-    return FileResponse("/usr/src/app/static/favicon.ico")
-
-
+# anytime we get /assets/*, we want to serve the static files in the assets folder
+# used in prod to serve react build
 @app.get("/assets/{file_path}")
 def static_assets(file_path: str):
-    return FileResponse(f"/usr/src/app/static//{file_path}")
+    return FileResponse(f"static/assets/{file_path}")
 
 
+# anytime we get /images/*, we want to serve the static files in the assets folder
+# used in prod to serve react build
 @app.get("/images/{file_path}")
 def static_images(file_path: str):
-    return FileResponse(f"/usr/src/app/static/images/{file_path}")
+    return FileResponse(f"static/images/{file_path}")
+
+
+@app.get("/favicon.ico")
+def favicon():
+    return FileResponse("static/favicon.ico")
 
 
 @app.get("/api/users")

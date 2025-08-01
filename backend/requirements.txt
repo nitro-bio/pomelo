@@ -4,8 +4,10 @@ black==25.1.0
 click==8.2.1
 fastapi==0.116.1
 h11==0.16.0
+httptools==0.6.4
 httpx==0.28.1
 idna==3.10
+invoke==2.2.0
 mypy-extensions==1.1.0
 packaging==25.0
 pathspec==0.12.1
@@ -19,3 +21,4 @@ starlette==0.47.2
 typing-extensions==4.14.1
 typing-inspection==0.4.1
 uvicorn==0.35.0
+watchdog==6.0.0

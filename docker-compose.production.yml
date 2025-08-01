@@ -2,7 +2,7 @@ version: "3"
 services:
   pomelo-production:
     build:
-      dockerfile: Dockerfile.production
+      dockerfile: dockerfiles/Dockerfile.production
     ports:
       - "10000:10000"
     environment:
