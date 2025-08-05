@@ -1,24 +1,22 @@
 import { z } from "zod";
 
-export const ProteinSequenceRequestSchema = z.object({
+export const EsmfoldRequestSchema = z.object({
   sequence: z.string().min(1).max(10000),
 });
-export type ProteinSequenceRequest = z.infer<
-  typeof ProteinSequenceRequestSchema
+export type EsmfoldRequest = z.infer<
+  typeof EsmfoldRequestSchema
 >;
 
-export const FoldResultSchema = z.object({
+export const EsmfoldResultSchema = z.object({
   pdb: z.string(),
   plddt: z.array(z.number()),
 });
-export type FoldResult = z.infer<typeof FoldResultSchema>;
+export type EsmfoldResult = z.infer<typeof EsmfoldResultSchema>;
 
-export const ProteinFoldingResponseSchema = z.object({
-  results: z.array(FoldResultSchema),
+export const EsmfoldResponseSchema = z.object({
+  results: z.array(EsmfoldResultSchema),
 });
-export type ProteinFoldingResponse = z.infer<
-  typeof ProteinFoldingResponseSchema
->;
+export type EsmfoldResponse = z.infer<typeof EsmfoldResponseSchema>;
 
 export const ProteinFoldingHealthResponseSchema = z.object({
   status: z.string(),

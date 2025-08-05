@@ -1,6 +1,6 @@
 import logging
 import httpx
-from protein_folding.models import FoldResult
+from protein_folding.models import EsmfoldResult
 from protein_folding.utils import calculate_plddt
 from config import check_env_vars
 from protein_folding.exceptions import (
@@ -36,7 +36,7 @@ def validate_sequence(sequence: str) -> None:
         )
 
 
-async def fold_protein(sequence: str) -> FoldResult:
+async def fold_with_esmfold(sequence: str) -> EsmfoldResult:
     """
     Call NVIDIA ESMFold API to fold a protein sequence.
 
@@ -44,7 +44,7 @@ async def fold_protein(sequence: str) -> FoldResult:
         sequence: Protein sequence string
 
     Returns:
-        FoldResult containing PDB structure and pLDDT scores
+        EsmfoldResult containing PDB structure and pLDDT scores
 
     Raises:
         ProteinSequenceValidationError: If sequence is invalid
@@ -78,8 +78,8 @@ async def fold_protein(sequence: str) -> FoldResult:
         pdb_string = response_body["pdbs"][0]
         plddt_scores = calculate_plddt(pdb_string)
 
-        # Return FoldResult
-        return FoldResult(pdb=pdb_string, plddt=plddt_scores)
+        # Return EsmfoldResult
+        return EsmfoldResult(pdb=pdb_string, plddt=plddt_scores)
 
     except httpx.TimeoutException:
         raise ProteinFoldingTimeoutError("ESMFold API request timed out")

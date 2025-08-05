@@ -1,5 +1,5 @@
 import { useDebounce } from "@uidotdev/usehooks";
-import { FoldResult, Boltz2Result } from "@/api/protein_folding/schemas";
+import { EsmfoldResult, Boltz2Result } from "@/api/protein_folding/schemas";
 import { PomeloSequenceViewer } from "@/components/PomeloSequenceViewer";
 import { PomeloMoleculeViewer } from "@/components/PomeloMoleculeViewer";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -19,7 +19,7 @@ export const FoldingCard = ({
   className,
   sequence,
 }: {
-  foldingData: FoldResult | Boltz2Result | null;
+  foldingData: EsmfoldResult | Boltz2Result | null;
   isFetchingFolding: boolean;
   foldingError: Error | null;
   structureHexColor?: string;

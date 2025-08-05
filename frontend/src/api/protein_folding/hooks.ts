@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  ProteinSequenceRequest,
-  ProteinFoldingResponse,
-  ProteinFoldingResponseSchema,
+  EsmfoldRequest,
+  EsmfoldResponse,
+  EsmfoldResponseSchema,
   ProteinFoldingHealthResponse,
   ProteinFoldingHealthResponseSchema,
   Boltz2Request,
@@ -11,24 +11,24 @@ import {
 } from "./schemas";
 import { apiRouter } from "@/api/router";
 
-const foldProteinEsmfold = async (
-  payload: ProteinSequenceRequest,
-): Promise<ProteinFoldingResponse> => {
+const esmfold = async (
+  payload: EsmfoldRequest,
+): Promise<EsmfoldResponse> => {
   const raw = await apiRouter.url("/protein_fold/esmfold").post(payload).json();
-  const parsed = ProteinFoldingResponseSchema.parse(raw);
+  const parsed = EsmfoldResponseSchema.parse(raw);
   return parsed;
 };
 
-export const useFoldProteinMutation = () => {
+export const useEsmfoldMutation = () => {
   const {
-    mutate: foldProtein,
+    mutate: esmfoldMutate,
     isPending: isFolding,
     error: foldingError,
     data: foldingResult,
     isSuccess: isFoldingSuccess,
   } = useMutation({
-    mutationFn: (payload: ProteinSequenceRequest) => {
-      return foldProteinEsmfold(payload);
+    mutationFn: (payload: EsmfoldRequest) => {
+      return esmfold(payload);
     },
     onError: (error) => {
       console.error("Protein folding failed:", error);
@@ -36,7 +36,7 @@ export const useFoldProteinMutation = () => {
   });
 
   return {
-    foldProtein,
+    esmfold: esmfoldMutate,
     isFolding,
     foldingError,
     foldingResult,

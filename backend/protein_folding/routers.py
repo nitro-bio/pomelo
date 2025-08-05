@@ -2,12 +2,12 @@ import logging
 from fastapi import APIRouter, HTTPException
 
 from protein_folding.models import (
-    ProteinFoldingResponse,
-    ProteinSequenceRequest,
+    EsmfoldResponse,
+    EsmfoldRequest,
     Boltz2Response,
     Boltz2Request,
 )
-from protein_folding.esmfold.service import fold_protein
+from protein_folding.esmfold.service import fold_with_esmfold
 from protein_folding.boltz2.service import fold_boltz2
 from protein_folding.exceptions import (
     ProteinFoldingError,
@@ -18,10 +18,10 @@ from protein_folding.exceptions import (
 router = APIRouter()
 
 
-@router.post("/protein_fold/esmfold", response_model=ProteinFoldingResponse)
+@router.post("/protein_fold/esmfold", response_model=EsmfoldResponse)
 async def fold_protein_esmfold(
-    request: ProteinSequenceRequest,
-) -> ProteinFoldingResponse:
+    request: EsmfoldRequest,
+) -> EsmfoldResponse:
     """
     Fold a protein sequence using NVIDIA ESMFold.
 
@@ -29,14 +29,14 @@ async def fold_protein_esmfold(
         request: Request containing protein sequence
 
     Returns:
-        ProteinFoldingResponse with folding results
+        EsmfoldResponse with folding results
 
     Raises:
         HTTPException: For various error conditions
     """
     try:
-        fold_result = await fold_protein(request.sequence)
-        return ProteinFoldingResponse(results=[fold_result])
+        fold_result = await fold_with_esmfold(request.sequence)
+        return EsmfoldResponse(results=[fold_result])
     except ProteinFoldingError as e:
         logging.error(f"Protein folding error: {e.message}")
         raise handle_protein_folding_exception(e)

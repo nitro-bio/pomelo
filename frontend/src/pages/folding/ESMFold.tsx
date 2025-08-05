@@ -1,7 +1,7 @@
-import { useFoldProteinMutation } from "@/api/protein_folding/hooks";
+import { useEsmfoldMutation } from "@/api/protein_folding/hooks";
 import {
-  ProteinSequenceRequestSchema,
-  type ProteinSequenceRequest,
+  EsmfoldRequestSchema,
+  type EsmfoldRequest,
 } from "@/api/protein_folding/schemas";
 import { FoldingCard } from "@/components/FoldingCard";
 import Shell from "@/components/Shell";
@@ -21,19 +21,19 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 export default function ESMFold(): React.ReactElement {
-  const { foldProtein, isFolding, foldingError, foldingResult } =
-    useFoldProteinMutation();
+  const { esmfold, isFolding, foldingError, foldingResult } =
+    useEsmfoldMutation();
 
-  const form = useForm<ProteinSequenceRequest>({
-    resolver: zodResolver(ProteinSequenceRequestSchema),
+  const form = useForm<EsmfoldRequest>({
+    resolver: zodResolver(EsmfoldRequestSchema),
     defaultValues: {
       sequence:
         "MAGEGDQQDAAAHNMGNHLPLLPAESEEDEMEVEDQDKEAKKPNIINFMTSLPTSHTYLGADMI",
     },
   });
 
-  const onSubmit = (data: ProteinSequenceRequest) => {
-    foldProtein(data);
+  const onSubmit = (data: EsmfoldRequest) => {
+    esmfold(data);
   };
 
   return (

@@ -2,8 +2,8 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
-class ProteinSequenceRequest(BaseModel):
-    """Request model for protein folding."""
+class EsmfoldRequest(BaseModel):
+    """Request model for ESMFold protein folding."""
 
     sequence: str = Field(
         ...,
@@ -13,7 +13,7 @@ class ProteinSequenceRequest(BaseModel):
     )
 
 
-class FoldResult(BaseModel):
+class EsmfoldResult(BaseModel):
     """Model for ESMFold API response data."""
 
     pdb: str = Field(..., description="List of PDB structures")
@@ -22,10 +22,10 @@ class FoldResult(BaseModel):
     )
 
 
-class ProteinFoldingResponse(BaseModel):
-    """Response model for protein folding."""
+class EsmfoldResponse(BaseModel):
+    """Response model for ESMFold protein folding."""
 
-    results: List[FoldResult] = Field(..., description="Folding Results")
+    results: List[EsmfoldResult] = Field(..., description="ESMFold Results")
 
 
 class Boltz2Request(BaseModel):
