@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   EsmfoldRequest,
   EsmfoldResponse,
@@ -10,33 +10,58 @@ import {
   Boltz2ResponseSchema,
 } from "./schemas";
 import { apiRouter } from "@/api/router";
+import { useAtom } from "jotai";
+import { enqueueJobAtom, jobsAtom } from "@/jobs/jobQueue";
+import { useMemo } from "react";
 
-const esmfold = async (
+export const esmfold = async (
   payload: EsmfoldRequest,
+  opts: { signal?: AbortSignal } = {},
 ): Promise<EsmfoldResponse> => {
-  const raw = await apiRouter.url("/protein_fold/esmfold").post(payload).json();
+  let chain = apiRouter.url("/protein_fold/esmfold");
+
+  if (opts.signal) {
+    const controller = new AbortController();
+    opts.signal.addEventListener("abort", () => controller.abort());
+    chain = chain.signal(controller);
+  }
+
+  const raw = await chain.post(payload).json();
   const parsed = EsmfoldResponseSchema.parse(raw);
   return parsed;
 };
 
 export const useEsmfoldMutation = () => {
-  const {
-    mutate: esmfoldMutate,
-    isPending: isFolding,
-    error: foldingError,
-    data: foldingResult,
-    isSuccess: isFoldingSuccess,
-  } = useMutation({
-    mutationFn: (payload: EsmfoldRequest) => {
-      return esmfold(payload);
-    },
-    onError: (error) => {
-      console.error("Protein folding failed:", error);
-    },
-  });
+  const [, enqueue] = useAtom(enqueueJobAtom);
+  const [jobs] = useAtom(jobsAtom);
+
+  // Find the most recent ESMFold job
+  const latestEsmfoldJob = useMemo(() => {
+    const esmfoldJobs = jobs.filter((job) => job.kind === "esmfold");
+    return esmfoldJobs.length > 0 
+      ? esmfoldJobs.reduce((latest, current) => 
+          current.createdAt > latest.createdAt ? current : latest
+        )
+      : null;
+  }, [jobs]);
+
+  // Map job states to hook return values
+  const isFolding = latestEsmfoldJob?.status === "queued" || latestEsmfoldJob?.status === "running";
+  const foldingError = latestEsmfoldJob?.status === "error" 
+    ? (latestEsmfoldJob.error instanceof Error ? latestEsmfoldJob.error : new Error(String(latestEsmfoldJob.error)))
+    : null;
+  const foldingResult = latestEsmfoldJob?.status === "success" ? latestEsmfoldJob.response : undefined;
+  const isFoldingSuccess = latestEsmfoldJob?.status === "success";
+
+  const esmfoldWithQueue = (payload: EsmfoldRequest) => {
+    enqueue({
+      kind: "esmfold",
+      request: payload,
+    });
+  };
 
   return {
-    esmfold: esmfoldMutate,
+    esmfold: esmfoldWithQueue,
     isFolding,
     foldingError,
     foldingResult,
@@ -71,33 +96,55 @@ export const useProteinFoldingHealthCheck = () => {
 };
 
 // Add the API call function
-const foldBoltz2Protein = async (
+export const foldBoltz2Protein = async (
   payload: Boltz2Request,
+  opts: { signal?: AbortSignal } = {},
 ): Promise<Boltz2Response> => {
-  const raw = await apiRouter.url("/protein_fold/boltz2").post(payload).json();
+  let chain = apiRouter.url("/protein_fold/boltz2");
+
+  if (opts.signal) {
+    const controller = new AbortController();
+    opts.signal.addEventListener("abort", () => controller.abort());
+    chain = chain.signal(controller);
+  }
+
+  const raw = await chain.post(payload).json();
   const parsed = Boltz2ResponseSchema.parse(raw);
   return parsed;
 };
 
 // Add the mutation hook
 export const useBoltz2Mutation = () => {
-  const {
-    mutate: foldBoltz2,
-    isPending: isFolding,
-    error: foldingError,
-    data: foldingResult,
-    isSuccess: isFoldingSuccess,
-  } = useMutation({
-    mutationFn: (payload: Boltz2Request) => {
-      return foldBoltz2Protein(payload);
-    },
-    onError: (error) => {
-      console.error("Boltz-2 folding failed:", error);
-    },
-  });
+  const [, enqueue] = useAtom(enqueueJobAtom);
+  const [jobs] = useAtom(jobsAtom);
+
+  // Find the most recent Boltz2 job
+  const latestBoltz2Job = useMemo(() => {
+    const boltz2Jobs = jobs.filter((job) => job.kind === "boltz2");
+    return boltz2Jobs.length > 0 
+      ? boltz2Jobs.reduce((latest, current) => 
+          current.createdAt > latest.createdAt ? current : latest
+        )
+      : null;
+  }, [jobs]);
+
+  // Map job states to hook return values
+  const isFolding = latestBoltz2Job?.status === "queued" || latestBoltz2Job?.status === "running";
+  const foldingError = latestBoltz2Job?.status === "error" 
+    ? (latestBoltz2Job.error instanceof Error ? latestBoltz2Job.error : new Error(String(latestBoltz2Job.error)))
+    : null;
+  const foldingResult = latestBoltz2Job?.status === "success" ? latestBoltz2Job.response : undefined;
+  const isFoldingSuccess = latestBoltz2Job?.status === "success";
+
+  const foldBoltz2WithQueue = (payload: Boltz2Request) => {
+    enqueue({
+      kind: "boltz2",
+      request: payload,
+    });
+  };
 
   return {
-    foldBoltz2,
+    foldBoltz2: foldBoltz2WithQueue,
     isFolding,
     foldingError,
     foldingResult,

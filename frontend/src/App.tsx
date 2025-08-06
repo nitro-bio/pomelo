@@ -5,6 +5,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 const Home = lazy(() => import("@/pages/Home"));
 const ESMFold = lazy(() => import("@/pages/folding/ESMFold"));
 const Boltz2 = lazy(() => import("@/pages/folding/Boltz2"));
+const Jobs = lazy(() => import("@/pages/Jobs"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export default function App(): React.ReactElement {
@@ -15,6 +16,7 @@ export default function App(): React.ReactElement {
         <Route path="/app/" element={<Home />} />
         <Route path="/app/folding/esmfold" element={<ESMFold />} />
         <Route path="/app/folding/boltz2" element={<Boltz2 />} />
+        <Route path="/app/jobs" element={<Jobs />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
