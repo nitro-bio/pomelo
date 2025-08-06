@@ -170,3 +170,9 @@
 		color: var(--color-primary-foreground) !important;
 	}
 }
+
+/* hack to add background color to seq metadata bar. should fix upstream */
+[data-radix-select-viewport] {
+	background-color: var(--color-popover);
+	
+}

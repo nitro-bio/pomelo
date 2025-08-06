@@ -1,8 +1,14 @@
 import { plddtColorLegend } from "@/constants";
 import { cn } from "@/lib/utils";
-import { MoleculePayload, MoleculeViewer } from "@nitro-bio/molstar-easy";
+import { MoleculePayload } from "@nitro-bio/molstar-easy";
 import { AriadneSelection, baseInSelection } from "@nitro-bio/sequence-viewers";
-import { useMemo } from "react";
+import { useMemo, Suspense, lazy } from "react";
+
+const MoleculeViewer = lazy(() =>
+  import("@nitro-bio/molstar-easy").then((module) => ({
+    default: module.MoleculeViewer,
+  })),
+);
 
 interface PomeloMoleculeViewerProps {
   structure_string?: string;
@@ -67,11 +73,21 @@ export const PomeloMoleculeViewer = ({
 
   return (
     <div className={cn("relative", className)}>
-      <MoleculeViewer
-        moleculePayloads={payloads}
-        className="min-h-80 w-full flex-1"
-        backgroundHexColor="#FFFFFF"
-      />
+      <Suspense
+        fallback={
+          <div className="flex min-h-80 w-full flex-1 items-center justify-center rounded bg-gray-50">
+            <div className="text-muted-foreground text-sm">
+              Loading 3D viewer...
+            </div>
+          </div>
+        }
+      >
+        <MoleculeViewer
+          moleculePayloads={payloads}
+          className="min-h-80 w-full flex-1"
+          backgroundHexColor="#FFFFFF"
+        />
+      </Suspense>
     </div>
   );
 };

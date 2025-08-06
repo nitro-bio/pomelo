@@ -1,4 +1,5 @@
 import { atom, createStore, type Getter, type Setter } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { nanoid } from "nanoid";
 import { Job, JobKind, JobRequestMap, JobSchema } from "./jobTypes";
 import {
@@ -9,7 +10,7 @@ import {
 } from "@/api/protein_folding/schemas";
 
 export const jobStore = createStore();
-export const jobsAtom = atom<Job[]>([]);
+export const jobsAtom = atomWithStorage<Job[]>("jobQueue", []);
 
 export const enqueueJobAtom = atom(
   null,
@@ -129,4 +130,10 @@ export const queuedJobsAtom = atom((get) =>
 );
 export const runningJobsAtom = atom((get) =>
   get(jobsAtom).filter((j) => j.status === "running"),
+);
+export const completedJobsAtom = atom((get) =>
+  get(jobsAtom).filter((j) => j.status === "success"),
+);
+export const getJobsByIdsAtom = atom(
+  (get) => (ids: string[]) => get(jobsAtom).filter((j) => ids.includes(j.id)),
 );

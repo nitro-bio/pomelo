@@ -18,6 +18,8 @@ export const FoldingCard = ({
   structureHexColor = "#FF0000",
   className,
   sequence,
+  selection: controlledSelection,
+  setSelection: controlledSetSelection,
 }: {
   foldingData: EsmfoldResult | Boltz2Result | null;
   isFetchingFolding: boolean;
@@ -25,8 +27,20 @@ export const FoldingCard = ({
   structureHexColor?: string;
   className?: string;
   sequence: string;
+  selection?: AriadneSelection | null;
+  setSelection?: (selection: AriadneSelection | null) => void;
 }) => {
-  const [selection, setSelection] = useState<AriadneSelection | null>(null);
+  const [internalSelection, setInternalSelection] =
+    useState<AriadneSelection | null>(null);
+
+  // Use controlled values if provided, otherwise use internal state
+  const isControlled =
+    controlledSelection !== undefined && controlledSetSelection !== undefined;
+  const selection = isControlled ? controlledSelection : internalSelection;
+  const setSelection = isControlled
+    ? controlledSetSelection
+    : setInternalSelection;
+
   const debouncedSelection = useDebounce(selection, 200);
   const [viewMode, setViewMode] = useState<("sequence" | "protein")[]>([
     "protein",

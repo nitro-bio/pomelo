@@ -38,19 +38,27 @@ export const useEsmfoldMutation = () => {
   // Find the most recent ESMFold job
   const latestEsmfoldJob = useMemo(() => {
     const esmfoldJobs = jobs.filter((job) => job.kind === "esmfold");
-    return esmfoldJobs.length > 0 
-      ? esmfoldJobs.reduce((latest, current) => 
-          current.createdAt > latest.createdAt ? current : latest
+    return esmfoldJobs.length > 0
+      ? esmfoldJobs.reduce((latest, current) =>
+          current.createdAt > latest.createdAt ? current : latest,
         )
       : null;
   }, [jobs]);
 
   // Map job states to hook return values
-  const isFolding = latestEsmfoldJob?.status === "queued" || latestEsmfoldJob?.status === "running";
-  const foldingError = latestEsmfoldJob?.status === "error" 
-    ? (latestEsmfoldJob.error instanceof Error ? latestEsmfoldJob.error : new Error(String(latestEsmfoldJob.error)))
-    : null;
-  const foldingResult = latestEsmfoldJob?.status === "success" ? latestEsmfoldJob.response : undefined;
+  const isFolding =
+    latestEsmfoldJob?.status === "queued" ||
+    latestEsmfoldJob?.status === "running";
+  const foldingError =
+    latestEsmfoldJob?.status === "error"
+      ? latestEsmfoldJob.error instanceof Error
+        ? latestEsmfoldJob.error
+        : new Error(String(latestEsmfoldJob.error))
+      : null;
+  const foldingResult =
+    latestEsmfoldJob?.status === "success"
+      ? latestEsmfoldJob.response
+      : undefined;
   const isFoldingSuccess = latestEsmfoldJob?.status === "success";
 
   const esmfoldWithQueue = (payload: EsmfoldRequest) => {
@@ -121,19 +129,27 @@ export const useBoltz2Mutation = () => {
   // Find the most recent Boltz2 job
   const latestBoltz2Job = useMemo(() => {
     const boltz2Jobs = jobs.filter((job) => job.kind === "boltz2");
-    return boltz2Jobs.length > 0 
-      ? boltz2Jobs.reduce((latest, current) => 
-          current.createdAt > latest.createdAt ? current : latest
+    return boltz2Jobs.length > 0
+      ? boltz2Jobs.reduce((latest, current) =>
+          current.createdAt > latest.createdAt ? current : latest,
         )
       : null;
   }, [jobs]);
 
   // Map job states to hook return values
-  const isFolding = latestBoltz2Job?.status === "queued" || latestBoltz2Job?.status === "running";
-  const foldingError = latestBoltz2Job?.status === "error" 
-    ? (latestBoltz2Job.error instanceof Error ? latestBoltz2Job.error : new Error(String(latestBoltz2Job.error)))
-    : null;
-  const foldingResult = latestBoltz2Job?.status === "success" ? latestBoltz2Job.response : undefined;
+  const isFolding =
+    latestBoltz2Job?.status === "queued" ||
+    latestBoltz2Job?.status === "running";
+  const foldingError =
+    latestBoltz2Job?.status === "error"
+      ? latestBoltz2Job.error instanceof Error
+        ? latestBoltz2Job.error
+        : new Error(String(latestBoltz2Job.error))
+      : null;
+  const foldingResult =
+    latestBoltz2Job?.status === "success"
+      ? latestBoltz2Job.response
+      : undefined;
   const isFoldingSuccess = latestBoltz2Job?.status === "success";
 
   const foldBoltz2WithQueue = (payload: Boltz2Request) => {

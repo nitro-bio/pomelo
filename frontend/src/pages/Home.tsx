@@ -1,7 +1,6 @@
-import React from "react";
-import Shell from "@/components/Shell";
 import { FoldingModelsGrid } from "@/components/FoldingModelsGrid";
-import { JobQueuePanel } from "@/components/JobQueuePanel";
+import Shell from "@/components/Shell";
+import React from "react";
 
 export default function Home(): React.ReactElement {
   return (
@@ -19,7 +18,6 @@ export default function Home(): React.ReactElement {
         <div className="w-full max-w-6xl">
           <FoldingModelsGrid />
         </div>
-        <JobQueuePanel />
       </div>
     </Shell>
   );

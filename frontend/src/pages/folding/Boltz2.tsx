@@ -128,7 +128,7 @@ export default function Boltz2(): React.ReactElement {
           <div className="flex flex-col items-center gap-4">
             {foldingError && (
               <div className="text-destructive text-sm">
-                Error: {foldingError.message}
+                Error: {JSON.stringify(foldingError.message)}
               </div>
             )}
 
