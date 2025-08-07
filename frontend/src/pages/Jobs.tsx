@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Shell from "@/components/Shell";
 import { JobComparison } from "@/components/JobComparison";
-import type { Job } from "@/jobs/jobTypes";
+import { getJobInfo, type Job } from "@/jobs/jobTypes";
 import { JobQueuePanel } from "@/components/JobQueuePanel";
 
 export default function Jobs(): React.ReactElement {
   const [compareJobs, setCompareJobs] = useState<Job[]>([]);
+  const [sequences, setSequences] = useState<string[]>([]);
+
+  const compareJobsKey = compareJobs.map((job) => job.id).join(",");
+  useEffect(
+    function updateSequencesFromJobs() {
+      const jobInfos = compareJobs.map((job) => getJobInfo(job));
+      setSequences(jobInfos.map((info) => info.sequence));
+    },
+    [compareJobsKey],
+  );
 
   return (
     <Shell>
@@ -21,7 +31,11 @@ export default function Jobs(): React.ReactElement {
               setCompareJobs={setCompareJobs}
             />
 
-            <JobComparison jobs={compareJobs} />
+            <JobComparison
+              jobs={compareJobs}
+              sequences={sequences}
+              setSequences={setSequences}
+            />
           </div>
         </div>
       </div>

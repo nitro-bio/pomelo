@@ -57,3 +57,19 @@ export interface JobResponseMap {
   esmfold: z.infer<typeof EsmfoldResponseSchema>;
   boltz2: z.infer<typeof Boltz2ResponseSchema>;
 }
+
+export const getJobInfo = (job: Job) => {
+  const time = new Date(job.createdAt).toLocaleString();
+  const duration =
+    job.finishedAt && job.startedAt
+      ? `${((job.finishedAt - job.startedAt) / 1000).toFixed(1)}s`
+      : "N/A";
+
+  return {
+    type: job.kind.toUpperCase(),
+    sequence: job.request.sequence,
+    sequenceLength: job.request.sequence.length,
+    time,
+    duration,
+  };
+};

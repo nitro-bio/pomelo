@@ -155,6 +155,8 @@
 @theme {
 	--color-sequences-primary: var(--color-primary);
 	--color-sequences-secondary: var(--color-accent);
+
+
 }
 
 /* restyle ketcher */
@@ -175,4 +177,10 @@
 [data-radix-select-viewport] {
 	background-color: var(--color-popover);
 	
+}
+
+/* bugfix button with className text-sequences-primary */
+button.text-sequences-primary {
+    color: var(--color-sequences-primary) !important;
+    background-color: transparent !important;
 }

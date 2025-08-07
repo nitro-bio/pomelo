@@ -62,7 +62,7 @@ export const FoldingCard = ({
         className,
       )}
     >
-      <div className={cn("flex h-full min-h-80 flex-col")}>
+      <div className={cn("flex h-80 h-full flex-col")}>
         {isFetchingFolding && (
           <p className="bg-background absolute -inset-x-4 -inset-y-2 flex animate-pulse items-center justify-center gap-1">
             <LoaderCircleIcon className="my-auto h-4 w-4 animate-spin" />

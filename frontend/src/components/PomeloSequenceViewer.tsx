@@ -7,12 +7,14 @@ import {
 
 export const PomeloSequenceViewer = ({
   sequences,
+  setSequences,
   selection,
   setSelection,
   annotations,
   charClassName,
 }: {
   sequences: string[];
+  setSequences?: (sequences: string[]) => void;
   selection: AriadneSelection | null;
   setSelection: (selection: AriadneSelection | null) => void;
   annotations?: Annotation[];
@@ -31,6 +33,7 @@ export const PomeloSequenceViewer = ({
     <div className="flex max-h-[600px] overflow-y-auto">
       <SequenceViewer
         sequences={sequences}
+        setSequences={setSequences}
         annotations={annotations ?? []}
         selection={selection}
         setSelection={setSelection}

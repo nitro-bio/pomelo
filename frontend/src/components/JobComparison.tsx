@@ -3,7 +3,7 @@ import { PomeloSequenceViewer } from "@/components/PomeloSequenceViewer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { STRUCTURE_HEX_COLOR } from "@/constants";
-import { Job } from "@/jobs/jobTypes";
+import { getJobInfo, Job } from "@/jobs/jobTypes";
 import { cn } from "@/lib/utils";
 import { AriadneSelection } from "@nitro-bio/sequence-viewers";
 import React, { useState } from "react";
@@ -11,22 +11,6 @@ import React, { useState } from "react";
 const getFoldingData = (job: Job) => {
   if (job.status !== "success" || !job.response) return null;
   return job.response.results?.[0] ?? null;
-};
-
-const getJobInfo = (job: Job) => {
-  const time = new Date(job.createdAt).toLocaleString();
-  const duration =
-    job.finishedAt && job.startedAt
-      ? `${((job.finishedAt - job.startedAt) / 1000).toFixed(1)}s`
-      : "N/A";
-
-  return {
-    type: job.kind.toUpperCase(),
-    sequence: job.request.sequence,
-    sequenceLength: job.request.sequence.length,
-    time,
-    duration,
-  };
 };
 
 type JobCardProps = {
@@ -47,7 +31,7 @@ export const JobCard: React.FC<JobCardProps> = ({
   const info = getJobInfo(job);
 
   return (
-    <div className={`flex flex-col gap-2 ${className ?? ""}`}>
+    <div className={cn("flex flex-col gap-2", className)}>
       <div className="flex items-center justify-between rounded-md">
         <div className="flex items-center gap-2">
           <Badge variant="outline">{info.type}</Badge>
@@ -73,26 +57,27 @@ export const JobCard: React.FC<JobCardProps> = ({
 
 interface JobComparisonProps {
   jobs: Job[];
+  sequences: string[];
+  setSequences: (sequences: string[]) => void;
 }
 
 export function JobComparison({
   jobs,
+  sequences,
+  setSequences,
 }: JobComparisonProps): React.ReactElement | null {
   if (jobs.length === 0) return null;
 
   const [selection, setSelection] = useState<AriadneSelection | null>(null);
 
-  // Precompute info for all jobs
-  const jobInfos = jobs.map((job) => getJobInfo(job));
-
   return (
     <Card className="w-full">
       <CardContent className="flex flex-col gap-4">
-        <div className={cn("flex flex-wrap gap-4")}>
-          {jobs.map((job, index) => (
+        <div className={cn("grid grid-cols-3 gap-4")}>
+          {jobs.map((job) => (
             <JobCard
-              className={cn("min-w-1/4 flex-1")}
-              key={job.id || index}
+              className={cn("")}
+              key={job.id}
               job={job}
               selection={selection}
               setSelection={setSelection}
@@ -102,7 +87,8 @@ export function JobComparison({
 
         <div className="rounded-md border p-4">
           <PomeloSequenceViewer
-            sequences={jobInfos.map((info) => info.sequence)}
+            sequences={sequences}
+            setSequences={setSequences}
             selection={selection}
             setSelection={setSelection}
           />
