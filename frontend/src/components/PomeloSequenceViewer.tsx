@@ -36,7 +36,6 @@ export const PomeloSequenceViewer = ({
         setSelection={setSelection}
         charClassName={charClassName ?? defaultCharClassName}
         selectionClassName="!bg-secondary/80"
-        hideMetadataBar
         noValidate
       />
     </div>

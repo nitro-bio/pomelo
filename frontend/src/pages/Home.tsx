@@ -1,6 +1,6 @@
-import React from "react";
-import Shell from "@/components/Shell";
 import { FoldingModelsGrid } from "@/components/FoldingModelsGrid";
+import Shell from "@/components/Shell";
+import React from "react";
 
 export default function Home(): React.ReactElement {
   return (

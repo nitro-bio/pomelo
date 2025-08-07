@@ -3,9 +3,7 @@ import { z } from "zod";
 export const EsmfoldRequestSchema = z.object({
   sequence: z.string().min(1).max(10000),
 });
-export type EsmfoldRequest = z.infer<
-  typeof EsmfoldRequestSchema
->;
+export type EsmfoldRequest = z.infer<typeof EsmfoldRequestSchema>;
 
 export const EsmfoldResultSchema = z.object({
   pdb: z.string(),
